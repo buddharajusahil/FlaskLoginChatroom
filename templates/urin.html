@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Authorization Test</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+	
+</head>
+<body>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+
+		    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+			socket.on('connect', () => {
+				
+				document.querySelector('#send').onclick = function () {
+			    	let message = {{ u|tojson }} + ": " + (document.getElementById('message').value);
+			    	socket.emit('messagesent', {'message': message});
+		    	};
+		    	
+      		});
+		    
+			
+		    socket.on("finalmessage", data => {
+		    	const p = document.createElement('p');
+		    	p.innerHTML = `${data.message}`;
+		    	document.querySelector('#chat').append(p);
+		    });
+		    
+		});
+
+		
+	</script>
+	<div id="chat">
+		<!--
+		{% for x in messages %}
+			<p>
+				{{ x }}
+			<p>
+		{% endfor %}
+		-->
+	</div>
+		<input id="message" type="text">
+		<button id="send">Send</button>
+</body>
+</html>
